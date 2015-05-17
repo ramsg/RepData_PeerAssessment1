@@ -1,16 +1,11 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
 # ------------------------------------------------------------------------------------------
 
 
 ## Loading and preprocessing the data
-```{r Read the Activity Data using read.csv(), echo=TRUE }
 
+```r
 library(ggplot2)
 
 activityData <- read.csv("activity.csv", header=TRUE, stringsAsFactors=FALSE)
@@ -20,8 +15,8 @@ activityData$interval <- as.numeric(activityData$interval)
 ```
 
 ## What is mean total number of steps taken per day?
-```{r Lets calculate the mean/median for the active days and plot a histogram, echo=TRUE}
 
+```r
 dailySteps <- aggregate(activityData$steps, 
                         list(day=activityData$date), 
                         sum, na.rm=TRUE)
@@ -30,18 +25,23 @@ colnames(dailySteps) <- c("Day", "Steps")
 hist(dailySteps$Steps, col="lightblue", 
      xlab="Total Steps per day", 
      main = "Histogram - Total steps per day", breaks=15)
+```
 
+![](PA1_template_files/figure-html/Lets calculate the mean/median for the active days and plot a histogram-1.png) 
+
+```r
 meanSteps <- as.character(round(mean(dailySteps$Steps)))
 medianSteps <- as.character(median(dailySteps$Steps))
 ```
 
-####The mean steps taken in a day   :  `r meanSteps`
+####The mean steps taken in a day   :  9354
 
-####The median steps taken in a day :  `r medianSteps`
+####The median steps taken in a day :  10395
 
 ## What is the average daily activity pattern?
 
-```{r Histogram}
+
+```r
 intervalSteps <- aggregate(activityData$steps, 
                            list(interval=activityData$interval), 
                            mean, na.rm=TRUE)
@@ -51,26 +51,29 @@ plot(intervalSteps$Interval, intervalSteps$Steps,
      type = "l", col="blue", 
      xlab = "Interval", ylab = "Mean Steps per Interval", 
      main="Average number of steps taken per 5-min interval")
+```
 
+![](PA1_template_files/figure-html/Histogram-1.png) 
+
+```r
 maxIndex <- which.max(intervalSteps$Steps)
 maxInterval <- intervalSteps$Interval[maxIndex]
-
 ```
 
 
 
-####The Maximum steps are taken for the interval:  `r maxInterval`
+####The Maximum steps are taken for the interval:  835
 
 ## Imputing missing values
 
-```{r Imputing Missing Values}
+
+```r
 missingIndex <- is.na(activityData$steps)
 numMissingValues <- sum(missingIndex)
-
 ```
-####The total number of missing rows are: `r numMissingValues`
-```{r}
+####The total number of missing rows are: 2304
 
+```r
 imputedData <- activityData
 for (i in which(is.na(activityData$steps))) {
         imputedData$steps[i] <- intervalSteps$Steps[which(intervalSteps$Interval == imputedData$interval[i])]
@@ -84,20 +87,24 @@ colnames(imputedDailySteps) <- c("Day", "Steps")
 hist(imputedDailySteps$Steps, col="lightblue", 
      xlab="Total Steps per day", 
      main = "Histogram - Total steps per day", breaks=15)
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-1-1.png) 
+
+```r
 imputedMeanSteps <- as.character(round(mean(imputedDailySteps$Steps)))
 imputedMedianSteps <- as.character(round(median(imputedDailySteps$Steps)))
 ```
 
 
-####The mean steps taken in a day   :  `r imputedMeanSteps`
+####The mean steps taken in a day   :  10766
 
-####The median steps taken in a day :  `r imputedMedianSteps`
+####The median steps taken in a day :  10766
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
-```{r weekend }
 
+```r
 isWeekend <- function(x) {
         return(weekdays(x) %in% c("Saturday", "Sunday"))
         }
@@ -107,3 +114,5 @@ imputedData$weekend <- c("Weekday", "Weekend")[imputedData$weekend + 1]
 g <- ggplot(imputedData) 
 g  +   stat_summary(aes(interval, steps, color=weekend), fun.y = mean, na.rm = T, geom = 'line') +  labs(y = 'Number of Steps') + facet_wrap(~ weekend, ncol=1)
 ```
+
+![](PA1_template_files/figure-html/weekend-1.png) 
