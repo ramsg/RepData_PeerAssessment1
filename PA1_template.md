@@ -4,17 +4,27 @@
 
 
 ## Loading and preprocessing the data
+1. Activity Data is first uncompressed and read as a data frame.
+2. The interval column is converted to factor type.
+3. The date column is converted to Date type.
+
 
 ```r
 library(ggplot2)
 
-activityData <- read.csv("activity.csv", header=TRUE, stringsAsFactors=FALSE)
+unzip("activity.zip")
+activityData <- read.csv("activity.csv", header=TRUE,  
+                         colClasses=c("numeric", "character", "numeric"))
 activityData$steps <- as.numeric(activityData$steps)
 activityData$date <- as.Date(activityData$date)
 activityData$interval <- as.numeric(activityData$interval)
 ```
 
 ## What is mean total number of steps taken per day?
+
+1. Use aggregate function to get the steps per day, ignore the days where no data is available
+2. Draw the Histogram for number of steps
+
 
 ```r
 dailySteps <- aggregate(activityData$steps, 
@@ -39,6 +49,8 @@ medianSteps <- as.character(median(dailySteps$Steps))
 ####The median steps taken in a day :  10395
 
 ## What is the average daily activity pattern?
+1. Get the average for each interval period and draw the plot
+2. Find the interval for which there is maximum activity
 
 
 ```r
@@ -65,6 +77,9 @@ maxInterval <- intervalSteps$Interval[maxIndex]
 ####The Maximum steps are taken for the interval:  835
 
 ## Imputing missing values
+1. First get the number of missing rows(viz, number of intervals the data is missing)
+2. Use the average for each interval across the available data to populate the missing values.
+3. Draw the histogram from imputted values and calculate the mean and the media for the new values
 
 
 ```r
@@ -103,6 +118,9 @@ imputedMedianSteps <- as.character(round(median(imputedDailySteps$Steps)))
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
+1. Create a new column = "Days" which will indicate if it is a weekend or a weekday.
+2. Use ggplot to draw a panel with two seperate graphs for weekend and weekday
+
 
 ```r
 isWeekend <- function(x) {
@@ -121,3 +139,5 @@ g  +   stat_summary(aes(interval, steps, color=Days),
 ```
 
 ![](PA1_template_files/figure-html/weekend-1.png) 
+
+####Note: The activity on the weekends tends to be more spread out over the day compared to the weekdays. This probably is due to the fact that activities on weekdays mostly follow a work  routine, whereas weekends tend to be more unplanned and spread more evenly throughout the day.
