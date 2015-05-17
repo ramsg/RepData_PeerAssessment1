@@ -3,6 +3,7 @@ title: "Reproducible Research: Peer Assessment 1"
 output: 
   html_document:
     keep_md: true
+    self_contained: false
 ---
 
 # ------------------------------------------------------------------------------------------
@@ -13,7 +14,7 @@ output:
 2. The interval column is converted to factor type.
 3. The date column is converted to Date type.
 
-```{r Read_the_Activity_Data, echo=TRUE }
+```{r Read_the_Activity_Data, echo=TRUE, fig.path='figure/' }
 
 library(ggplot2)
 
@@ -30,7 +31,7 @@ activityData$interval <- as.numeric(activityData$interval)
 1. Use aggregate function to get the steps per day, ignore the days where no data is available
 2. Draw the Histogram for number of steps
 
-```{r Lets calculate the mean/median for the active days and plot a histogram, echo=TRUE}
+```{r mean_median_per_day, echo=TRUE, fig.path='figure/'}
 
 dailySteps <- aggregate(activityData$steps, 
                         list(day=activityData$date), 
@@ -53,7 +54,7 @@ medianSteps <- as.character(median(dailySteps$Steps))
 1. Get the average for each interval period and draw the plot
 2. Find the interval for which there is maximum activity
 
-```{r Histogram}
+```{r Histogram,fig.path='figure/'}
 intervalSteps <- aggregate(activityData$steps, 
                            list(interval=activityData$interval), 
                            mean, na.rm=TRUE)
@@ -78,13 +79,11 @@ maxInterval <- intervalSteps$Interval[maxIndex]
 2. Use the average for each interval across the available data to populate the missing values.
 3. Draw the histogram from imputted values and calculate the mean and the media for the new values
 
-```{r Imputing Missing Values}
+```{r Imputing_Missing_Values,fig.path='figure/'}
 missingIndex <- is.na(activityData$steps)
 numMissingValues <- sum(missingIndex)
 
-```
-####The total number of missing rows are: `r numMissingValues`
-```{r}
+
 
 imputedData <- activityData
 for (i in which(is.na(activityData$steps))) {
@@ -103,7 +102,7 @@ hist(imputedDailySteps$Steps, col="lightblue",
 imputedMeanSteps <- as.character(round(mean(imputedDailySteps$Steps)))
 imputedMedianSteps <- as.character(round(median(imputedDailySteps$Steps)))
 ```
-
+####The total number of missing rows are: `r numMissingValues`
 
 ####The mean steps taken in a day   :  `r imputedMeanSteps`
 
@@ -114,7 +113,7 @@ imputedMedianSteps <- as.character(round(median(imputedDailySteps$Steps)))
 1. Create a new column = "Days" which will indicate if it is a weekend or a weekday.
 2. Use ggplot to draw a panel with two seperate graphs for weekend and weekday
 
-```{r weekend }
+```{r weekend_vs_weekday,fig.path='figure/' }
 
 isWeekend <- function(x) {
         return(weekdays(x) %in% c("Saturday", "Sunday"))

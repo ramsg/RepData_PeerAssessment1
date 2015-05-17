@@ -37,7 +37,7 @@ hist(dailySteps$Steps, col="lightblue",
      main = "Histogram - Total steps per day", breaks=15)
 ```
 
-![](PA1_template_files/figure-html/Lets calculate the mean/median for the active days and plot a histogram-1.png) 
+![](figure/mean_median_per_day-1.png) 
 
 ```r
 meanSteps <- as.character(round(mean(dailySteps$Steps)))
@@ -65,7 +65,7 @@ plot(intervalSteps$Interval, intervalSteps$Steps,
      main="Average number of steps taken per 5-min interval")
 ```
 
-![](PA1_template_files/figure-html/Histogram-1.png) 
+![](figure/Histogram-1.png) 
 
 ```r
 maxIndex <- which.max(intervalSteps$Steps)
@@ -85,10 +85,9 @@ maxInterval <- intervalSteps$Interval[maxIndex]
 ```r
 missingIndex <- is.na(activityData$steps)
 numMissingValues <- sum(missingIndex)
-```
-####The total number of missing rows are: 2304
 
-```r
+
+
 imputedData <- activityData
 for (i in which(is.na(activityData$steps))) {
         imputedData$steps[i] <- intervalSteps$Steps[which(intervalSteps$Interval == imputedData$interval[i])]
@@ -104,13 +103,13 @@ hist(imputedDailySteps$Steps, col="lightblue",
      main = "Histogram - Total steps per day", breaks=15)
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-1-1.png) 
+![](figure/Imputing_Missing_Values-1.png) 
 
 ```r
 imputedMeanSteps <- as.character(round(mean(imputedDailySteps$Steps)))
 imputedMedianSteps <- as.character(round(median(imputedDailySteps$Steps)))
 ```
-
+####The total number of missing rows are: 2304
 
 ####The mean steps taken in a day   :  10766
 
@@ -138,6 +137,6 @@ g  +   stat_summary(aes(interval, steps, color=Days),
         facet_wrap(~ Days, ncol=1)
 ```
 
-![](PA1_template_files/figure-html/weekend-1.png) 
+![](figure/weekend_vs_weekday-1.png) 
 
-####Note: The activity on the weekends tends to be more spread out over the day compared to the weekdays. This probably is due to the fact that activities on weekdays mostly follow a work  routine, whereas weekends tend to be more unplanned and spread more evenly throughout the day.
+####Note: The activity on the weekends tends to be more spread out over the day compared to the weekdays. This probably is due to the fact that activities on weekdays mostly follow a work  routine and concentrated in the morning, whereas weekends tend to be more unplanned and spread more evenly throughout the day.
