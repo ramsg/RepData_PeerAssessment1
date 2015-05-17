@@ -101,9 +101,14 @@ imputedMedianSteps <- as.character(round(median(imputedDailySteps$Steps)))
 isWeekend <- function(x) {
         return(weekdays(x) %in% c("Saturday", "Sunday"))
         }
-imputedData$weekend <- isWeekend(imputedData$date)
-imputedData$weekend <- c("Weekday", "Weekend")[imputedData$weekend + 1]
+imputedData$Days <- isWeekend(imputedData$date)
+imputedData$Days <- c("Weekday", "Weekend")[imputedData$Days + 1]
 
 g <- ggplot(imputedData) 
-g  +   stat_summary(aes(interval, steps, color=weekend), fun.y = mean, na.rm = T, geom = 'line') +  labs(y = 'Number of Steps') + facet_wrap(~ weekend, ncol=1)
+g  +   stat_summary(aes(interval, steps, color=Days), 
+                    fun.y = mean, 
+                    na.rm = TRUE, 
+                    geom = 'line') +  
+        labs(x="Interval",y = 'Number of Steps') + 
+        facet_wrap(~ Days, ncol=1)
 ```
